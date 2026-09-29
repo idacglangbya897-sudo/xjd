@@ -1,0 +1,23 @@
+name: Build Android APK
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - name: Unzip project
+      run: unzip -q *.zip
+    - name: Grant execute permission for gradlew
+      run: cd Imgui_Android-YtblDemo && chmod +x gradlew
+    - name: Build with Gradle
+      run: cd Imgui_Android-YtblDemo && ./gradlew assembleDebug
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug
+        path: Imgui_Android-YtblDemo/**/build/outputs/apk/debug/*.apk
